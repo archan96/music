@@ -19,7 +19,32 @@ music-archan/
 ## Example usage
 
 ```bash
-./.venv/bin/python midi_to_keys.py ./data/midi/ludovico-einaudi-nuvole-bianche-6901.mid --markdown-table -o ./output/practice-grids/ludovico-einaudi-nuvole-bianche.md
+./convert_music.sh ./data/midi/ludovico-einaudi-nuvole-bianche-6901.mid
+./convert_music.sh ./data/midi/ludovico-einaudi-nuvole-bianche-6901.mid --grid
+./convert_music.sh ./data/mxl/moonlight_sonata_3rd_movement.mxl --grid
+```
 
-./.venv/bin/python mxl_to_keys.py ./data/mxl/moonlight_sonata_3rd_movement.mxl -o ./output/keys/moonlight_sonata_3rd_movement.keys.txt
+The converter now auto-generates output filenames from the input filename:
+
+- `output/keys/<input_name>.keys.txt`
+- `output/practice-grids/<input_name>.practice_grid.md`
+
+Example:
+
+```bash
+./.venv/bin/python mxl_to_keys.py ./data/mxl/moonlight_sonata_3rd_movement.mxl
+# Wrote: output/keys/moonlight_sonata_3rd_movement.keys.txt
+
+./.venv/bin/python mxl_to_keys.py ./data/mxl/moonlight_sonata_3rd_movement.mxl --markdown-table
+# Wrote: output/practice-grids/moonlight_sonata_3rd_movement.practice_grid.md
+```
+
+Optional flags:
+
+```bash
+# custom output directory (name still auto-derived)
+./convert_music.sh ./data/midi/moonlight1.mid --out-dir ./output/custom
+
+# print to terminal instead of writing a file
+./.venv/bin/python mxl_to_keys.py ./data/midi/moonlight1.mid --stdout
 ```

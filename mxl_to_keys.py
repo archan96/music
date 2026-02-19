@@ -182,6 +182,11 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("input", type=Path, help="Path to .mxl/.musicxml/.mid/.midi file")
     parser.add_argument("-o", "--output", type=Path, help="Optional output text file path")
     parser.add_argument(
+        "--output-dir",
+        type=Path,
+        help="Output directory. File name is auto-derived from input name.",
+    )
+    parser.add_argument(
         "--include-rests",
         action="store_true",
         help="Include rest events as the token 'rest'",
@@ -197,7 +202,25 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         default=4,
         help="Mini-step resolution for --markdown-table (default: 4).",
     )
+    parser.add_argument(
+        "--stdout",
+        action="store_true",
+        help="Print to stdout instead of writing to an output file.",
+    )
     return parser.parse_args(argv)
+
+
+def resolve_output_path(input_path: Path, output_path: Path | None, output_dir: Path | None, markdown_table: bool) -> Path:
+    if output_path is not None:
+        return output_path
+
+    if output_dir is not None:
+        base_dir = output_dir
+    else:
+        base_dir = Path("output/practice-grids") if markdown_table else Path("output/keys")
+
+    suffix = ".practice_grid.md" if markdown_table else ".keys.txt"
+    return base_dir / f"{input_path.stem}{suffix}"
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -208,10 +231,14 @@ def main(argv: list[str] | None = None) -> int:
         part_tokens = extract_part_tokens(str(args.input), include_rests=args.include_rests)
         output = format_part_lines(part_tokens)
 
-    if args.output:
-        args.output.write_text(output + "\n", encoding="utf-8")
-    else:
+    if args.stdout:
         print(output)
+        return 0
+
+    output_path = resolve_output_path(args.input, args.output, args.output_dir, args.markdown_table)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text(output + "\n", encoding="utf-8")
+    print(f"Wrote: {output_path}")
 
     return 0
 
