@@ -177,9 +177,9 @@ def generate_markdown_table(file_path: str, steps_per_beat: int = 4) -> str:
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Convert .mxl/.musicxml into readable key tokens such as c4 and [c4 e4 g4]."
+        description="Convert .mxl/.musicxml/.mid/.midi into readable key tokens such as c4 and [c4 e4 g4]."
     )
-    parser.add_argument("input", type=Path, help="Path to .mxl or .musicxml file")
+    parser.add_argument("input", type=Path, help="Path to .mxl/.musicxml/.mid/.midi file")
     parser.add_argument("-o", "--output", type=Path, help="Optional output text file path")
     parser.add_argument(
         "--include-rests",
